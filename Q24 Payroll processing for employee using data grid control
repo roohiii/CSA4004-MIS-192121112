@@ -1,0 +1,53 @@
+-- Step 1: Create Tables
+
+-- Table to store employee details
+CREATE TABLE Employees (
+    employee_id INT PRIMARY KEY,
+    name VARCHAR(100),
+    department VARCHAR(50),
+    base_salary DECIMAL(10, 2)
+);
+
+-- Table to store payroll data (bonus and deductions)
+CREATE TABLE Payroll (
+    employee_id INT,
+    bonus DECIMAL(10, 2),
+    deductions DECIMAL(10, 2),
+    tax_rate DECIMAL(5, 2),  -- Adding tax rate column
+    FOREIGN KEY (employee_id) REFERENCES Employees(employee_id)
+);
+
+-- Step 2: Insert Sample Data
+
+-- Inserting employee details
+INSERT INTO Employees (employee_id, name, department, base_salary)
+VALUES
+(101, 'Alice', 'HR', 5000),
+(102, 'Bob', 'Engineering', 7000),
+(103, 'Charlie', 'Sales', 6000);
+
+-- Inserting payroll details for bonuses, deductions, and tax rates
+INSERT INTO Payroll (employee_id, bonus, deductions, tax_rate)
+VALUES
+(101, 500, 300, 5),  -- 5% tax for Alice
+(102, 800, 400, 5),  -- 5% tax for Bob
+(103, 600, 350, 5);  -- 5% tax for Charlie
+
+-- Step 3: Calculate and Display Net Salary
+
+SELECT 
+    e.employee_id,
+    e.name,
+    e.department,
+    e.base_salary,
+    p.bonus,
+    p.deductions,
+    p.tax_rate,
+    -- Calculating net salary (Base salary + Bonus - Deductions - Tax)
+    (e.base_salary + p.bonus - p.deductions - (e.base_salary * p.tax_rate / 100)) AS net_salary
+FROM 
+    Employees e
+JOIN 
+    Payroll p
+ON 
+    e.employee_id = p.employee_id;
